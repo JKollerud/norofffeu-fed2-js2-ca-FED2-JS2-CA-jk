@@ -1,6 +1,11 @@
-import { getProfile, clearAuth, getApiKey, getToken } from "./utils/api.js";
+import { getProfile, clearAuth, getApiKey, getToken, clearApiKey } from "./utils/api.js";
 import { registerUser } from "./auth/register.js";
 import { loginUser, ensureApiKey } from "./auth/login.js";
+import { renderFeed } from "./views/feed.js";
+import { renderPost } from "./views/post.js";
+import { renderEdit } from "./views/edit.js";
+import { renderDelete } from "./views/delete.js";
+import { renderProfile } from "./views/profile.js";
 
 const app = document.getElementById("app");
 
@@ -15,12 +20,14 @@ const app = document.getElementById("app");
 	}
 })();
 
-// Nav
+// nav and simple pages
 function nav() {
 	const me = getProfile();
 	return `
     <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
       <a href="#/">Home</a>
+	  <a href="#/profile">My Profile</a>
+      <a href="#/feed">Feed</a>
       <a href="#/login">Login</a>
       <a href="#/register">Register</a>
       ${me ? `<button id="logoutBtn">Logout (${me.name})</button>` : ""}
@@ -28,7 +35,6 @@ function nav() {
   `;
 }
 
-// Pages
 function HomePage() {
 	const me = getProfile();
 	return `
@@ -38,7 +44,7 @@ function HomePage() {
 		me
 			? `
       <p>You're logged in as <strong>@${me.name}</strong>.</p>
-      <p>Next step: build the feed page.</p>
+      <p><a href="#/feed">Go to the feed</a>.</p>
     `
 			: `
       <p>You are not logged in.</p>
@@ -74,13 +80,15 @@ function RegisterPage() {
   `;
 }
 
-// Router/Render
+// router
 async function render() {
-	const path = location.hash.slice(1) || "/";
+	const hash = location.hash.slice(1) || "/";
+	const [path, qs] = hash.split("?");
+	const params = new URLSearchParams(qs || "");
 	const me = getProfile();
 
-	if (me && (path === "/login" || path === "/register")) {
-		location.hash = "/";
+	if (!me && (path === "/feed" || path === "/post")) {
+		location.hash = "/login";
 		return;
 	}
 
@@ -92,15 +100,11 @@ async function render() {
 			const data = Object.fromEntries(new FormData(e.currentTarget));
 			try {
 				await loginUser(data);
+				clearApiKey();
 				await ensureApiKey();
-				location.hash = "/";
+				location.hash = "/feed";
 			} catch (err) {
-				const msg = String(err.message || "");
-				if (msg.includes("401")) {
-					alert("Invalid email or password. Please try again.");
-				} else {
-					alert(msg);
-				}
+				alert(String(err.message || "Login failed"));
 			}
 		});
 	} else if (path === "/register") {
@@ -112,24 +116,54 @@ async function render() {
 			try {
 				await registerUser(data);
 				await loginUser({ email: data.email, password: data.password });
+				clearApiKey();
 				await ensureApiKey();
-				location.hash = "/";
+				location.hash = "/feed";
 			} catch (err) {
-				const msg = String(err.message || "");
-				if (msg.includes("Profile already exists") || msg.includes("exists")) {
-					alert(
-						"That username or email is already registered. Try logging in or choose a different username."
-					);
-				} else {
-					alert(msg);
-				}
+				alert(String(err.message || "Registration failed"));
 			}
 		});
+	} else if (path === "/feed") {
+		try {
+			await ensureApiKey();
+		} catch (e) {
+			console.warn("ensureApiKey before feed failed:", e);
+		}
+		await renderFeed(app);
+	} else if (path === "/post") {
+		const id = params.get("id");
+		if (!id) {
+			location.hash = "/feed";
+			return;
+		}
+		await renderPost(app, id);
+	} else if (path === "/edit") {
+		const id = params.get("id");
+		if (!id) {
+			location.hash = "/feed";
+			return;
+		}
+		await renderEdit(app, id);
+	} else if (path === "/delete") {
+		const id = params.get("id");
+		if (!id) {
+			location.hash = "/feed";
+			return;
+		}
+		await renderDelete(app, id);
+	} else if (path === "/profile") {
+		const me = getProfile();
+		const name = (params.get("name") || me?.name || "").trim();
+		if (!name) {
+			location.hash = "/login";
+			return;
+		}
+		await renderProfile(app, name);
 	} else {
 		app.innerHTML = HomePage();
 	}
 
-	// Logout Button
+	// logout
 	const logoutBtn = document.getElementById("logoutBtn");
 	if (logoutBtn) {
 		logoutBtn.addEventListener("click", () => {

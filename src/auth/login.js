@@ -9,6 +9,7 @@ export async function loginUser({ email, password }) {
 	const token = data?.accessToken ?? data?.data?.accessToken ?? data?.token;
 
 	const profile = data?.profile ?? data?.data ?? data;
+
 	if (!token) {
 		console.error("Login response had no accessToken. Full response:", data);
 		throw new Error("Login succeeded but no access token was returned.");
@@ -19,18 +20,22 @@ export async function loginUser({ email, password }) {
 }
 
 export async function ensureApiKey() {
-	const tokenPresent = !!localStorage.getItem("access_token");
-	if (!tokenPresent) throw new Error("Not logged in (no token present).");
-
 	const existing = getApiKey();
 	if (existing) return existing;
 
 	const name = import.meta.env.VITE_API_KEY_NAME || "API Key";
-	const data = await apiFetch("/auth/create-api-key", {
+	const res = await apiFetch("/auth/create-api-key", {
 		method: "POST",
 		body: JSON.stringify({ name }),
 	});
 
-	setApiKey(data.key);
-	return data.key;
+	const key = res?.key ?? res?.data?.key ?? res?.apiKey ?? res?.data?.apiKey;
+
+	if (!key) {
+		console.error("create-api-key response:", res);
+		throw new Error("API key was not returned by the server.");
+	}
+
+	setApiKey(key);
+	return key;
 }
