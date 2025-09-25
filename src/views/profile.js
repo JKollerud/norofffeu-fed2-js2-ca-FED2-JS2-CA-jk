@@ -23,6 +23,14 @@ function nav() {
   `;
 }
 
+/**
+ * Render a user's profile page, including info, follow/unfollow buttons, and posts.
+ * @async
+ * @param {HTMLElement} mount - The container element where the profile should be rendered.
+ * @param {string} name - The profile name (username) to display.
+ * @returns {Promise<void>} Resolves when rendering is complete.
+ */
+
 export async function renderProfile(mount, name) {
 	await ensureApiKey();
 	mount.innerHTML = `${nav()}<div id="profileView">Loading…</div>`;

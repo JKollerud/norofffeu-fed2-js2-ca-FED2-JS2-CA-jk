@@ -47,6 +47,12 @@ function layout() {
   `;
 }
 
+/**
+ * Escape special HTML characters
+ * @param {string} str - The string to escape.
+ * @returns {string} Escaped HTML-safe string.
+ */
+
 function escapeHtml(str) {
 	return String(str)
 		.replaceAll("&", "&amp;")
@@ -55,6 +61,14 @@ function escapeHtml(str) {
 		.replaceAll('"', "&quot;")
 		.replaceAll("'", "&#039;");
 }
+
+/**
+ * Render the Feed page
+ * Displays posts, search, pagination, and create form.
+ * @async
+ * @param {HTMLElement} mount - The container element where the feed should be rendered.
+ * @returns {Promise<void>} Resolves when rendering is complete.
+ */
 
 export async function renderFeed(mount) {
 	mount.innerHTML = layout();
