@@ -14,10 +14,10 @@ function escapeHtml(str) {
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <nav class="nav">
       <a href="#/">Home</a>
+	  <a href="#/profile">My Profile</a>
       <a href="#/feed">Feed</a>
-      <a href="#/profile">My Profile</a>
       ${me ? `<button id="logoutBtn">Logout (${me.name})</button>` : ""}
     </nav>
   `;
@@ -49,35 +49,35 @@ export async function renderProfile(mount, name) {
 		}
 
 		root.innerHTML = `
-      <header style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+      <header class="profile-header">
         ${
 			prof.avatar?.url
-				? `<img src="${prof.avatar.url}" alt="" width="64" height="64" style="border-radius:50%;object-fit:cover;" onerror="this.remove()">`
-				: `<div style="width:64px;height:64px;border-radius:50%;background:#eee;display:inline-block;"></div>`
+				? `<img class="avatar" src="${prof.avatar.url}" alt="" onerror="this.remove()">`
+				: `<div class="avatar placeholder"></div>`
 		}
-        <div>
-          <h1 style="margin:.25rem 0;">${escapeHtml(prof.name || name)}</h1>
-          ${prof.email ? `<div style="opacity:.8">${escapeHtml(prof.email)}</div>` : ""}
+        <div class="profile-meta>
+          <h1 class="title">${escapeHtml(prof.name || name)}</h1>
+          ${prof.email ? `<div class="muted">${escapeHtml(prof.email)}</div>` : ""}
           <small id="counts">Followers: ${prof._count?.followers ?? 0} • Following: ${
 			prof._count?.following ?? 0
 		}</small>
         </div>
-        <div style="margin-left:auto; display:flex; gap:.5rem;">
+        <div class="profile-actions">
           ${
 				isMe
 					? ""
 					: `
-            <button id="followBtn" ${isFollowing ? "hidden" : ""}>Follow</button>
-            <button id="unfollowBtn" ${isFollowing ? "" : "hidden"}>Unfollow</button>
+            <button id="followBtn" class="button" ${isFollowing ? "hidden" : ""}>Follow</button>
+            <button id="unfollowBtn" class="button danger" ${isFollowing ? "" : "hidden"}>Unfollow</button>
           `
 			}
         </div>
       </header>
 
       <section>
-        <h2 style="margin:.5rem 0;">Posts by ${escapeHtml(prof.name || name)}</h2>
-        <ul id="profilePosts" style="display:grid; gap:.75rem; padding-left:0; list-style:none;"></ul>
-        <div style="display:flex; gap:.5rem; margin-top:.75rem;">
+        <h2>Posts by ${escapeHtml(prof.name || name)}</h2>
+        <ul id="profilePosts" class="feed-list"></ul>
+        <div class="pagination">
           <button id="prevBtn">Prev</button>
           <span id="pageLabel"></span>
           <button id="nextBtn">Next</button>
@@ -145,20 +145,20 @@ export async function renderProfile(mount, name) {
 				? items
 						.map(
 							(p) => `
-          <li class="card" style="border:1px solid #ddd; padding:.75rem;">
-            <h3 style="margin:.2rem 0;">${escapeHtml(p.title ?? "(untitled)")}</h3>
+          <li class="card">
+            <h3>${escapeHtml(p.title ?? "(untitled)")}</h3>
             ${
 				p.media
 					? `
               <img src="${p.media.url || p.media}" alt=""
                    loading="lazy" referrerpolicy="no-referrer"
-                   onerror="this.remove()" style="max-width:100%;height:auto;" />`
+                   onerror="this.remove()" />`
 					: ""
 			}
             <p>${escapeHtml((p.body || "").slice(0, 160))}${(p.body || "").length > 160 ? "…" : ""}</p>
-            <button onclick="location.hash='#/post?id=${p.id}&owner=${encodeURIComponent(
+            <a class="button" onclick="location.hash='#/post?id=${p.id}&owner=${encodeURIComponent(
 								prof.name || name
-							)}'">Open</button>
+							)}'">Open</a>
           </li>
         `
 						)

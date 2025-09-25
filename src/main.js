@@ -25,7 +25,7 @@ const app = document.getElementById("app");
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <nav class="nav">
       <a href="#/">Home</a>
 	  <a href="#/profile">My Profile</a>
       <a href="#/feed">Feed</a>
@@ -59,7 +59,7 @@ function LoginPage() {
 	return `
     ${nav()}
     <h1>Login</h1>
-    <form id="loginForm" style="display:grid; gap:.5rem; max-width:320px;">
+    <form id="loginForm" class="login-register-form">
       <input name="email" type="email" placeholder="you@stud.noroff.no" required />
       <input name="password" type="password" placeholder="Password" required />
       <button>Login</button>
@@ -71,7 +71,7 @@ function RegisterPage() {
 	return `
     ${nav()}
     <h1>Register</h1>
-    <form id="registerForm" style="display:grid; gap:.5rem; max-width:320px;">
+    <form id="registerForm" class="login-register-form">
       <input name="name" placeholder="Username (no spaces)" required />
       <input name="email" type="email" placeholder="you@stud.noroff.no" required />
       <input name="password" type="password" placeholder="Password" required />

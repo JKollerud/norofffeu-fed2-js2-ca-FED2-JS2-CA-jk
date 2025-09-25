@@ -13,7 +13,7 @@ function escapeHtml(str) {
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <nav class="nav">
       <a href="#/">Home</a>
       <a href="#/feed">Feed</a>
       ${me ? `<button id="logoutBtn">Logout (${me.name})</button>` : ""}
@@ -52,7 +52,7 @@ export async function renderPost(mount, id) {
 		const ownerLabel = author.name || authorEmail || hintedOwner || "unknown";
 		const isMe = myName && ownerLabel.toLowerCase() === myName;
 		target.innerHTML = `
-  <article class="card" style="border:1px solid #ddd; padding:1rem;">
+  <article class="card">
     <h1>${escapeHtml(post.title ?? "(untitled)")}</h1>
     ${
 		post.media
@@ -60,17 +60,16 @@ export async function renderPost(mount, id) {
                  alt=""
                  loading="lazy"
                  referrerpolicy="no-referrer"
-                 onerror="this.remove()"
-                 style="max-width:100%;height:auto;" />`
+                 onerror="this.remove()" />`
 			: ""
 	}
     <p>${escapeHtml(post.body ?? "")}</p>
-    <p><small>by ${escapeHtml(ownerLabel)}</small></p>
+    <p class="muted">by ${escapeHtml(ownerLabel)}</p>
 
     ${
 		!isMe && ownerLabel && ownerLabel !== "unknown"
 			? `
-      <div style="margin:.5rem 0;">
+      <div class="block-gap">
         <a href="#/profile?name=${encodeURIComponent(ownerLabel)}">View profile</a>
       </div>`
 			: ""
@@ -79,14 +78,14 @@ export async function renderPost(mount, id) {
     ${
 		mine
 			? `
-      <div style="display:flex; gap:.5rem; margin-top:.5rem;">
+      <div class="row-gap">
         <a class="button" href="#/edit?id=${postId}">Edit</a>
         <a class="button" href="#/delete?id=${postId}" style="color:#b00020;">Delete</a>
       </div>`
 			: ""
 	}
 
-    <p style="margin-top:1rem;">
+    <p class="block-gap">
       <a href="#/feed">&larr; Back to feed</a>
     </p>
   </article>

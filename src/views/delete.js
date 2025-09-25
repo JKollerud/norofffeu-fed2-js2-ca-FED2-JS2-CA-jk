@@ -4,7 +4,7 @@ import { getProfile } from "../utils/api.js";
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <nav class="nav">
       <a href="#/">Home</a>
       <a href="#/feed">Feed</a>
       ${me ? `<button id="logoutBtn">Logout (${me.name})</button>` : ""}
@@ -28,13 +28,14 @@ export async function renderDelete(mount, id) {
 		}
 
 		el.innerHTML = `
-      <h1>Delete post</h1>
-      <p><strong>Title:</strong> ${post.title ?? "(untitled)"}</p>
-      <p>This action cannot be undone.</p>
-      <div style="display:flex; gap:.5rem;">
-        <button id="confirmDel" style="background:#b00020;color:white;padding:.4rem .75rem;border:0;border-radius:.25rem;">Delete</button>
-        <a class="button" href="#/post?id=${id}">Cancel</a>
-      </div>
+      <article class="card">
+        <h1 class="title">Delete Post</h1>
+        <p>Are you sure you want to delete <strong>${post.title ?? "(untitled)"}</strong>?</p>
+        <div class="row-gap">
+          <button id="confirmDel" class="button danger">Delete</button>
+          <a class="button" href="#/post?id=${id}">Cancel</a>
+        </div>
+      </article>
     `;
 
 		document.getElementById("confirmDel").addEventListener("click", async () => {

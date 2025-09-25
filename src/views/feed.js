@@ -5,8 +5,9 @@ import { ensureApiKey } from "../auth/login.js";
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem; align-items:center;">
+    <nav class="nav">
       <a href="#/">Home</a>
+	  <a href="#/profile">My Profile</a>
       <a href="#/feed">Feed</a>
       <a href="#/login">Login</a>
       <a href="#/register">Register</a>
@@ -20,15 +21,15 @@ function layout() {
     ${nav()}
     <h1>Feed</h1>
 
-    <form id="searchBar" style="display:flex; gap:.5rem; margin:.5rem 0;">
+    <form id="searchBar" class="search-bar">
       <input name="q" id="q" placeholder="Search posts..." />
       <button>Search</button>
     </form>
 
-    <div id="composer" style="margin:.75rem 0;">
+    <div id="composer" class="composer">
       <details>
         <summary>Create a new post</summary>
-        <form id="createPost" style="display:grid; gap:.5rem; max-width:420px; margin-top:.5rem;">
+        <form id="createPost" class="create-post-form">
           <input name="title" placeholder="Title" required />
           <textarea name="body" placeholder="Say something..." required></textarea>
           <input name="media" type="url" placeholder="Image URL (optional)" />
@@ -37,9 +38,9 @@ function layout() {
       </details>
     </div>
 
-    <ul id="feedList" style="display:grid; gap:.75rem; padding-left:0; list-style:none;"></ul>
+    <ul id="feedList" class="feed-list"></ul>
 
-    <div style="display:flex; gap:.5rem; margin-top:.75rem;">
+    <div class="pagination">
       <button id="prev">Prev</button>
       <span id="pageLabel"></span>
       <button id="next">Next</button>
@@ -90,8 +91,8 @@ export async function renderFeed(mount) {
 						const ownerName = (p.author?.name || p.owner?.name || "").trim();
 
 						return `
-          <li class="card" style="border:1px solid #ddd; padding:.75rem;">
-            <h3 style="margin:.2rem 0;">${escapeHtml(p.title ?? "(untitled)")}</h3>
+          <li class="card">
+            <h3>${escapeHtml(p.title ?? "(untitled)")}</h3>
             ${
 				p.media
 					? `
@@ -101,7 +102,6 @@ export async function renderFeed(mount) {
                 loading="lazy"
                 referrerpolicy="no-referrer"
                 onerror="this.remove()"
-                style="max-width:100%;height:auto;"
               />`
 					: ""
 			}
@@ -111,7 +111,6 @@ export async function renderFeed(mount) {
     ${escapeHtml(ownerName || "unknown")}
   </a>
 </small><br/>
-<!-- pass owner in query so post.js can decide Edit/Delete -->
 <button onclick="location.hash='#/post?id=${p.id}&owner=${encodeURIComponent(ownerName)}'">Open</button>
 
           </li>

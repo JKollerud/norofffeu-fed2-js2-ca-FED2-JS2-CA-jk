@@ -4,7 +4,7 @@ import { getProfile } from "../utils/api.js";
 function nav() {
 	const me = getProfile();
 	return `
-    <nav style="display:flex; gap:1rem; margin-bottom:1rem;">
+    <nav class="nav">
       <a href="#/">Home</a>
       <a href="#/feed">Feed</a>
       ${me ? `<button id="logoutBtn">Logout (${me.name})</button>` : ""}
@@ -13,7 +13,7 @@ function nav() {
 }
 
 export async function renderEdit(mount, id) {
-	mount.innerHTML = `${nav()}<div id="editView">Loading…</div>`;
+	mount.innerHTML = `${nav()}<div class="container"><div id="editView">Loading…</div></div>`;
 	const el = document.getElementById("editView");
 
 	try {
@@ -27,18 +27,18 @@ export async function renderEdit(mount, id) {
 		}
 
 		el.innerHTML = `
-      <h1>Edit post</h1>
-      <form id="editForm" style="display:grid;gap:.5rem;max-width:480px;">
-        <input name="title" value="${post.title ?? ""}" placeholder="Title" required />
-        <textarea name="body" placeholder="Body" required>${post.body ?? ""}</textarea>
-        <input name="media" type="url" value="${
-			post.media?.url || post.media || ""
-		}" placeholder="Image URL (optional)" />
-        <div style="display:flex; gap:.5rem;">
-          <button>Save</button>
-          <a class="button" href="#/post?id=${id}">Cancel</a>
-        </div>
-      </form>
+      <article class="card">
+        <h1 class="title">Edit Post</h1>
+        <form id="editForm" class="form-grid">
+          <input name="title" placeholder="Title" value="${post.title ?? ""}" />
+          <textarea name="body" placeholder="Body">${post.body ?? ""}</textarea>
+          <input name="media" type="url" placeholder="Image URL" value="${post.media?.url || post.media || ""}" />
+          <div class="row-gap">
+            <button class="button" type="submit">Save</button>
+            <a class="button" href="#/post?id=${id}">Cancel</a>
+          </div>
+        </form>
+      </article>
     `;
 
 		document.getElementById("editForm").addEventListener("submit", async (e) => {
