@@ -6,6 +6,7 @@ import { renderPost } from "./views/post.js";
 import { renderEdit } from "./views/edit.js";
 import { renderDelete } from "./views/delete.js";
 import { renderProfile } from "./views/profile.js";
+import "./css/style.css";
 
 const app = document.getElementById("app");
 
