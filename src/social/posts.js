@@ -2,8 +2,9 @@ import { apiFetch } from "../utils/api.js";
 
 // listing posts
 export async function listPosts({ page = 1, limit = 10, query = "" } = {}) {
-	let url = `/social/posts?_author=true&_comments=true&limit=${limit}&page=${page}`;
-	if (query) url += `&q=${encodeURIComponent(query)}`;
+	const q = String(query || "").trim();
+	const baseParams = `_author=true&_comments=true&limit=${limit}&page=${page}`;
+	const url = q ? `/social/posts/search?q=${encodeURIComponent(q)}&${baseParams}` : `/social/posts?${baseParams}`;
 	return await apiFetch(url);
 }
 
