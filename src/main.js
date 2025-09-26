@@ -81,7 +81,7 @@ function RegisterPage() {
   `;
 }
 
-// router
+// route
 async function render() {
 	const hash = location.hash.slice(1) || "/";
 	const [path, qs] = hash.split("?");

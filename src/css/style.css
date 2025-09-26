@@ -41,6 +41,7 @@ a:hover {
 	background: #415a77;
 }
 
+/* button */
 button,
 .button {
 	background: #1b263b;
@@ -112,6 +113,18 @@ textarea:focus {
 	background: #0f2a45;
 }
 
+.form-grid {
+	display: grid;
+	gap: 0.5rem;
+	max-width: 560px;
+}
+
+.login-register-form {
+	display: grid;
+	gap: 0.5rem;
+	max-width: 320px;
+}
+
 /* page layout */
 h1,
 h2,
@@ -155,6 +168,12 @@ p {
 	list-style: none;
 }
 
+.feed-img {
+	max-width: 100%;
+	max-height: 400px;
+	object-fit: cover;
+}
+
 /* pagination */
 .pagination {
 	display: flex;
@@ -162,27 +181,7 @@ p {
 	margin-top: 0.75rem;
 }
 
-button {
-	cursor: pointer;
-}
-
-.title {
-	margin: 0.25rem 0;
-}
-
-.muted {
-	opacity: 0.8;
-}
-
-.row-gap {
-	display: flex;
-	gap: 0.5rem;
-	align-items: center;
-}
-.block-gap {
-	margin: 0.5rem 0;
-}
-
+/* profile */
 .profile-header {
 	display: flex;
 	gap: 1rem;
@@ -212,15 +211,20 @@ button {
 	background: #eee;
 }
 
-/* form */
-.form-grid {
-	display: grid;
-	gap: 0.5rem;
-	max-width: 560px;
+/* various */
+.title {
+	margin: 0.25rem 0;
 }
 
-.login-register-form {
-	display: grid;
+.muted {
+	opacity: 0.8;
+}
+
+.row-gap {
+	display: flex;
 	gap: 0.5rem;
-	max-width: 320px;
+	align-items: center;
+}
+.block-gap {
+	margin: 0.5rem 0;
 }

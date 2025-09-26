@@ -96,7 +96,7 @@ export async function renderFeed(mount) {
             ${
 				p.media
 					? `
-              <img
+              <img class="feed-img"
                 src="${p.media.url || p.media}"
                 alt=""
                 loading="lazy"
